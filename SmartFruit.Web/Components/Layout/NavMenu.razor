@@ -1,0 +1,70 @@
+<!-- Mobile Navigation Menu -->
+<div class="mobile-nav-menu d-lg-none">
+    <div class="mobile-nav-header">
+        <div class="container-fluid">
+            <NavLink class="navbar-brand" href="/">
+                <img src="assets/img/logo.png" alt="SmartFruit" style="height: 40px;">
+            </NavLink>
+            <button class="mobile-nav-toggle" type="button" @onclick="ToggleMobileMenu">
+                <span class="navbar-toggler-icon">
+                    <i class="fas @(isMobileMenuOpen ? "fa-times" : "fa-bars")"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-nav-content @(isMobileMenuOpen ? "show" : "")">
+        <nav class="mobile-nav-list">
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All" @onclick="CloseMobileMenu">
+                    <i class="fas fa-home"></i> Home
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/products" @onclick="CloseMobileMenu">
+                    <i class="fas fa-apple-alt"></i> Products
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/about" @onclick="CloseMobileMenu">
+                    <i class="fas fa-info-circle"></i> About Us
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/contact" @onclick="CloseMobileMenu">
+                    <i class="fas fa-envelope"></i> Contact
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/news" @onclick="CloseMobileMenu">
+                    <i class="fas fa-newspaper"></i> News
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="/cart" @onclick="CloseMobileMenu">
+                    <i class="fas fa-shopping-cart"></i> Cart
+                </NavLink>
+            </div>
+        </nav>
+    </div>
+</div>
+
+@code {
+    private bool isMobileMenuOpen = false;
+
+    private void ToggleMobileMenu()
+    {
+        isMobileMenuOpen = !isMobileMenuOpen;
+    }
+
+    private void CloseMobileMenu()
+    {
+        isMobileMenuOpen = false;
+    }
+}
+

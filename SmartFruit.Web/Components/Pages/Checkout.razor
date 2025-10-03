@@ -1,0 +1,308 @@
+@page "/checkout"
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Checkout - SmartFruit</PageTitle>
+
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="breadcrumb-text">
+					<p>Fresh and Organic</p>
+					<h1>Check Out Product</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end breadcrumb section -->
+
+<!-- check out section -->
+<div class="checkout-section mt-150 mb-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="checkout-accordion-wrap">
+					<div class="accordion" id="accordionExample">
+						<div class="card single-accordion">
+							<div class="card-header" id="headingOne">
+								<h5 class="mb-0">
+									<button class="btn btn-link @(showBilling ? "" : "collapsed")" type="button" @onclick="ToggleBilling">
+										Billing Address
+									</button>
+								</h5>
+							</div>
+							<div class="collapse @(showBilling ? "show" : "")" id="collapseOne">
+								<div class="card-body">
+									<div class="billing-address-form">
+										<EditForm Model="@billingForm" OnValidSubmit="@SaveBilling">
+											<DataAnnotationsValidator />
+											<ValidationSummary />
+											<p><InputText @bind-Value="billingForm.Name" placeholder="Full Name" class="form-control" /></p>
+											<p><InputText @bind-Value="billingForm.Email" placeholder="Email" class="form-control" /></p>
+											<p><InputText @bind-Value="billingForm.Address" placeholder="Address" class="form-control" /></p>
+											<p><InputText @bind-Value="billingForm.Phone" placeholder="Phone" class="form-control" /></p>
+											<p><InputTextArea @bind-Value="billingForm.Notes" placeholder="Order Notes (Optional)" rows="5" class="form-control" /></p>
+										</EditForm>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card single-accordion">
+							<div class="card-header" id="headingTwo">
+								<h5 class="mb-0">
+									<button class="btn btn-link @(showShipping ? "" : "collapsed")" type="button" @onclick="ToggleShipping">
+										Shipping Address
+									</button>
+								</h5>
+							</div>
+							<div class="collapse @(showShipping ? "show" : "")" id="collapseTwo">
+								<div class="card-body">
+									<div class="shipping-address-form">
+										<div class="form-check mb-3">
+											<input class="form-check-input" type="checkbox" @bind="sameAsBilling" id="sameAsBilling">
+											<label class="form-check-label" for="sameAsBilling">
+												Same as billing address
+											</label>
+										</div>
+										@if (!sameAsBilling)
+										{
+											<EditForm Model="@shippingForm">
+												<p><InputText @bind-Value="shippingForm.Name" placeholder="Full Name" class="form-control" /></p>
+												<p><InputText @bind-Value="shippingForm.Address" placeholder="Shipping Address" class="form-control" /></p>
+												<p><InputText @bind-Value="shippingForm.Phone" placeholder="Phone" class="form-control" /></p>
+											</EditForm>
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card single-accordion">
+							<div class="card-header" id="headingThree">
+								<h5 class="mb-0">
+									<button class="btn btn-link @(showPayment ? "" : "collapsed")" type="button" @onclick="TogglePayment">
+										Payment Details
+									</button>
+								</h5>
+							</div>
+							<div class="collapse @(showPayment ? "show" : "")" id="collapseThree">
+								<div class="card-body">
+									<div class="card-details">
+										<div class="payment-methods mb-3">
+											@* <div class="form-check">
+												<input class="form-check-input" type="radio" name="paymentMethod" @onchange="() => paymentMethod = \"card\"" checked="@(paymentMethod == \"card\")" id="cardPayment">
+												<label class="form-check-label" for="cardPayment">
+													Credit/Debit Card
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="paymentMethod" @onchange="() => paymentMethod = \"cod\"" checked="@(paymentMethod == \"cod\")" id="codPayment">
+												<label class="form-check-label" for="codPayment">
+													Cash on Delivery
+												</label>
+											</div> *@
+										</div>
+										@if (paymentMethod == "card")
+										{
+											<EditForm Model="@paymentForm">
+												<p><InputText @bind-Value="paymentForm.CardNumber" placeholder="Card Number" class="form-control" /></p>
+												<div class="row">
+													<div class="col-6">
+														<p><InputText @bind-Value="paymentForm.ExpiryDate" placeholder="MM/YY" class="form-control" /></p>
+													</div>
+													<div class="col-6">
+														<p><InputText @bind-Value="paymentForm.CVV" placeholder="CVV" class="form-control" /></p>
+													</div>
+												</div>
+												<p><InputText @bind-Value="paymentForm.CardHolderName" placeholder="Cardholder Name" class="form-control" /></p>
+											</EditForm>
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="order-details-wrap">
+					<table class="order-details">
+						<thead>
+							<tr>
+								<th>Your Order Details</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody class="order-details-body">
+							<tr>
+								<td>Product</td>
+								<td>Total</td>
+							</tr>
+							@foreach (var item in orderItems)
+							{
+								<tr>
+									<td>@item.Name x @item.Quantity</td>
+									<td>$@(item.Price * item.Quantity)</td>
+								</tr>
+							}
+						</tbody>
+						<tbody class="checkout-details">
+							<tr>
+								<td>Subtotal</td>
+								<td>$@subtotal</td>
+							</tr>
+							<tr>
+								<td>Shipping</td>
+								<td>$@shipping</td>
+							</tr>
+							<tr>
+								<td><strong>Total</strong></td>
+								<td><strong>$@total</strong></td>
+							</tr>
+						</tbody>
+					</table>
+					<button @onclick="PlaceOrder" class="boxed-btn" disabled="@isProcessing">
+						@if (isProcessing)
+						{
+							<span class="spinner-border spinner-border-sm me-2"></span>
+						}
+						Place Order
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end check out section -->
+
+<!-- logo carousel -->
+<div class="logo-carousel-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="logo-carousel-inner">
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/1.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/2.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/3.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/4.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/5.png" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end logo carousel -->
+
+@code {
+	private bool showBilling = true;
+	private bool showShipping = false;
+	private bool showPayment = false;
+	private bool sameAsBilling = true;
+	private bool isProcessing = false;
+	private string paymentMethod = "card";
+
+	private BillingForm billingForm = new();
+	private ShippingForm shippingForm = new();
+	private PaymentForm paymentForm = new();
+
+	private List<OrderItem> orderItems = new();
+	private decimal subtotal => orderItems.Sum(x => x.Price * x.Quantity);
+	private decimal shipping = 50;
+	private decimal total => subtotal + shipping;
+
+	protected override void OnInitialized()
+	{
+		// Sample order items
+		orderItems = new List<OrderItem>
+		{
+			new OrderItem { Name = "Strawberry", Price = 85, Quantity = 1 },
+			new OrderItem { Name = "Berry", Price = 70, Quantity = 1 },
+			new OrderItem { Name = "Lemon", Price = 35, Quantity = 1 }
+		};
+	}
+
+	private void ToggleBilling()
+	{
+		showBilling = !showBilling;
+	}
+
+	private void ToggleShipping()
+	{
+		showShipping = !showShipping;
+	}
+
+	private void TogglePayment()
+	{
+		showPayment = !showPayment;
+	}
+
+	private async Task SaveBilling()
+	{
+		await Task.CompletedTask;
+	}
+
+	private async Task PlaceOrder()
+	{
+		isProcessing = true;
+		StateHasChanged();
+
+		// Simulate order processing
+		await Task.Delay(2000);
+
+		// Redirect to success page or show success message
+		isProcessing = false;
+		StateHasChanged();
+	}
+
+	public class BillingForm
+	{
+		[Required]
+		public string Name { get; set; } = "";
+		
+		[Required]
+		[EmailAddress]
+		public string Email { get; set; } = "";
+		
+		[Required]
+		public string Address { get; set; } = "";
+		
+		[Required]
+		public string Phone { get; set; } = "";
+		
+		public string Notes { get; set; } = "";
+	}
+
+	public class ShippingForm
+	{
+		public string Name { get; set; } = "";
+		public string Address { get; set; } = "";
+		public string Phone { get; set; } = "";
+	}
+
+	public class PaymentForm
+	{
+		public string CardNumber { get; set; } = "";
+		public string ExpiryDate { get; set; } = "";
+		public string CVV { get; set; } = "";
+		public string CardHolderName { get; set; } = "";
+	}
+
+	public class OrderItem
+	{
+		public string Name { get; set; } = "";
+		public decimal Price { get; set; }
+		public int Quantity { get; set; }
+	}
+}
