@@ -1,0 +1,93 @@
+<!-- top header area -->
+<div class="top-header-area" id="sticker">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-sm-12 text-center">
+				<div class="main-menu-wrap">
+					<!-- logo -->
+					<div class="site-logo">
+						<NavLink href="/">
+							<img src="fruitkha-1.0.0/assets/img/logo.png" alt="SmartFruit Logo">
+						</NavLink>
+					</div>
+					<!-- logo -->
+					
+					<!-- menu start -->
+					<nav class="main-menu">
+						<ul>
+							<li class="current-list-item">
+								<NavLink href="/" Match="NavLinkMatch.All">
+									<i class="fas fa-home"></i> Home
+								</NavLink>
+							</li>
+							<li>
+								<NavLink href="/shop">
+									<i class="fas fa-apple-alt"></i> Shop
+								</NavLink>
+							</li>
+							<li>
+								<NavLink href="/about">
+									<i class="fas fa-info-circle"></i> About
+								</NavLink>
+							</li>
+							<li>
+								<NavLink href="/contact">
+									<i class="fas fa-envelope"></i> Contact
+								</NavLink>
+							</li>
+							<li>
+								<NavLink href="/news">
+									<i class="fas fa-newspaper"></i> News
+								</NavLink>
+							</li>
+							<li>
+								<div class="header-icons">
+									<NavLink class="shopping-cart" href="/cart">
+										<i class="fas fa-shopping-cart"></i>
+									</NavLink>
+									<a class="mobile-hide search-bar-icon" href="#" @onclick="ToggleSearch">
+										<i class="fas fa-search"></i>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</nav>
+					<a class="mobile-show search-bar-icon" href="#" @onclick="ToggleSearch">
+						<i class="fas fa-search"></i>
+					</a>
+					<div class="mobile-menu"></div>
+					<!-- menu end -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- search area -->
+<div class="search-area">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<span class="close-btn"><i class="fas fa-window-close"></i></span>
+				<div class="search-bar">
+					<div class="search-bar-tablecell">
+						<h3>Search For:</h3>
+						<input type="text" placeholder="Keywords">
+						<button type="submit">Search <i class="fas fa-search"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end search area -->
+
+@code {
+    private bool showSearch = false;
+
+    private void ToggleSearch()
+    {
+        showSearch = !showSearch;
+        // Add JavaScript interop to show/hide search area if needed
+    }
+}

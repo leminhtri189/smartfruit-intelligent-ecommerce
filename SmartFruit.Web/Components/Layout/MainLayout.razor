@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <!-- Header Section -->
+    <Header />
+    
+    <!-- Main Content Area -->
+    <main class="main-content" role="main">
+        @Body
+    </main>
+    
+    <!-- Footer Section -->
+    <Footer />
+</div>
+
+<div id="blazor-error-ui">
+    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ? "An error has occurred. This application may no longer respond until reloaded." : "An error has occurred. This application may no longer respond until reloaded."
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+

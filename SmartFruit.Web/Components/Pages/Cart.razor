@@ -1,0 +1,196 @@
+@page "/cart"
+
+<PageTitle>Cart - SmartFruit</PageTitle>
+
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="breadcrumb-text">
+					<p>Fresh and Organic</p>
+					<h1>Cart</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end breadcrumb section -->
+
+<!-- cart -->
+<div class="cart-section mt-150 mb-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-12">
+				<div class="cart-table-wrap">
+					<table class="cart-table">
+						<thead class="cart-table-head">
+							<tr class="table-head-row">
+								<th class="product-remove"></th>
+								<th class="product-image">Product Image</th>
+								<th class="product-name">Name</th>
+								<th class="product-price">Price</th>
+								<th class="product-quantity">Quantity</th>
+								<th class="product-total">Total</th>
+							</tr>
+						</thead>
+						<tbody>
+							@if (cartItems.Any())
+							{
+								@foreach (var item in cartItems)
+								{
+									<tr class="table-body-row">
+										<td class="product-remove">
+											<button @onclick="() => RemoveItem(item.Id)" class="btn-remove">
+												<i class="far fa-window-close"></i>
+											</button>
+										</td>
+										<td class="product-image"><img src="@item.ImageUrl" alt="@item.Name"></td>
+										<td class="product-name">@item.Name</td>
+										<td class="product-price">$@item.Price</td>
+										<td class="product-quantity">
+											<input type="number" @bind="item.Quantity" @bind:after="UpdateQuantity" min="1" />
+										</td>
+										<td class="product-total">$@(item.Price * item.Quantity)</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="6" class="text-center">Your cart is empty</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="col-lg-4">
+				<div class="total-section">
+					<table class="total-table">
+						<thead class="total-table-head">
+							<tr class="table-total-row">
+								<th>Total</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="total-data">
+								<td><strong>Subtotal: </strong></td>
+								<td>$@subtotal</td>
+							</tr>
+							<tr class="total-data">
+								<td><strong>Shipping: </strong></td>
+								<td>$@shipping</td>
+							</tr>
+							<tr class="total-data">
+								<td><strong>Total: </strong></td>
+								<td>$@total</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="cart-buttons">
+						<button @onclick="UpdateCart" class="boxed-btn">Update Cart</button>
+						<NavLink href="/checkout" class="boxed-btn black">Check Out</NavLink>
+					</div>
+				</div>
+
+				<div class="coupon-section">
+					<h3>Apply Coupon</h3>
+					<div class="coupon-form-wrap">
+						<EditForm Model="@couponForm" OnValidSubmit="@ApplyCoupon">
+							<p><InputText @bind-Value="couponForm.CouponCode" placeholder="Coupon" /></p>
+							<p><button type="submit" class="btn btn-primary">Apply</button></p>
+						</EditForm>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end cart -->
+
+<!-- logo carousel -->
+<div class="logo-carousel-section">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="logo-carousel-inner">
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/1.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/2.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/3.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/4.png" alt="">
+					</div>
+					<div class="single-logo-item">
+						<img src="assets/img/company-logos/5.png" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end logo carousel -->
+
+@code {
+	private List<CartItem> cartItems = new();
+	private CouponForm couponForm = new();
+	private decimal subtotal => cartItems.Sum(x => x.Price * x.Quantity);
+	private decimal shipping = 45;
+	private decimal total => subtotal + shipping;
+
+	protected override void OnInitialized()
+	{
+		// Sample cart items
+		cartItems = new List<CartItem>
+		{
+			new CartItem { Id = 1, Name = "Strawberry", Price = 85, Quantity = 1, ImageUrl = "assets/img/products/product-img-1.jpg" },
+			new CartItem { Id = 2, Name = "Berry", Price = 70, Quantity = 1, ImageUrl = "assets/img/products/product-img-2.jpg" },
+			new CartItem { Id = 3, Name = "Lemon", Price = 35, Quantity = 1, ImageUrl = "assets/img/products/product-img-3.jpg" }
+		};
+	}
+
+	private void RemoveItem(int id)
+	{
+		cartItems.RemoveAll(x => x.Id == id);
+		StateHasChanged();
+	}
+
+	private void UpdateQuantity()
+	{
+		StateHasChanged();
+	}
+
+	private void UpdateCart()
+	{
+		// Update cart logic
+		StateHasChanged();
+	}
+
+	private async Task ApplyCoupon()
+	{
+		// Apply coupon logic
+		await Task.CompletedTask;
+	}
+
+	public class CartItem
+	{
+		public int Id { get; set; }
+		public string Name { get; set; } = "";
+		public decimal Price { get; set; }
+		public int Quantity { get; set; }
+		public string ImageUrl { get; set; } = "";
+	}
+
+	public class CouponForm
+	{
+		public string CouponCode { get; set; } = "";
+	}
+}
